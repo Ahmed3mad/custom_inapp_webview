@@ -106,7 +106,7 @@ class InAppBrowser {
     args.putIfAbsent('contextMenu', () => contextMenu?.toMap() ?? {});
     args.putIfAbsent('windowId', () => windowId);
     args.putIfAbsent('initialUserScripts',
-        () => initialUserScripts?.map((e) => e.toMap()).toList() ?? []);
+        () => initialUserScripts?.map((e) => e.toMap())?.toList() ?? []);
     await _sharedChannel.invokeMethod('openUrlRequest', args);
   }
 
@@ -159,7 +159,7 @@ class InAppBrowser {
     args.putIfAbsent('contextMenu', () => contextMenu?.toMap() ?? {});
     args.putIfAbsent('windowId', () => windowId);
     args.putIfAbsent('initialUserScripts',
-        () => initialUserScripts?.map((e) => e.toMap()).toList() ?? []);
+        () => initialUserScripts?.map((e) => e.toMap())?.toList() ?? []);
     await _sharedChannel.invokeMethod('openFile', args);
   }
 
@@ -194,7 +194,7 @@ class InAppBrowser {
     args.putIfAbsent('contextMenu', () => contextMenu?.toMap() ?? {});
     args.putIfAbsent('windowId', () => windowId);
     args.putIfAbsent('initialUserScripts',
-        () => initialUserScripts?.map((e) => e.toMap()).toList() ?? []);
+        () => initialUserScripts?.map((e) => e.toMap())?.toList() ?? []);
     await _sharedChannel.invokeMethod('openData', args);
   }
 

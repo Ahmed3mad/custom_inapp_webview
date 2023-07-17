@@ -289,7 +289,7 @@ class _InAppWebViewState extends State<InAppWebView> {
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      if (widget.initialOptions?.android.useHybridComposition ?? false) {
+      if (widget.initialOptions?.android?.useHybridComposition ?? false) {
         return PlatformViewLink(
           viewType: 'com.pichillilorenzo/flutter_inappwebview',
           surfaceFactory: (
@@ -314,7 +314,7 @@ class _InAppWebViewState extends State<InAppWebView> {
                 'initialOptions': widget.initialOptions?.toMap() ?? {},
                 'contextMenu': widget.contextMenu?.toMap() ?? {},
                 'windowId': widget.windowId,
-                'initialUserScripts': widget.initialUserScripts?.map((e) => e.toMap()).toList() ?? [],
+                'initialUserScripts': widget.initialUserScripts?.map((e) => e.toMap())?.toList() ?? [],
               },
               creationParamsCodec: const StandardMessageCodec(),
             )
@@ -336,7 +336,7 @@ class _InAppWebViewState extends State<InAppWebView> {
             'initialOptions': widget.initialOptions?.toMap() ?? {},
             'contextMenu': widget.contextMenu?.toMap() ?? {},
             'windowId': widget.windowId,
-            'initialUserScripts': widget.initialUserScripts?.map((e) => e.toMap()).toList() ?? [],
+            'initialUserScripts': widget.initialUserScripts?.map((e) => e.toMap())?.toList() ?? [],
           },
           creationParamsCodec: const StandardMessageCodec(),
         );
@@ -353,7 +353,7 @@ class _InAppWebViewState extends State<InAppWebView> {
           'initialOptions': widget.initialOptions?.toMap() ?? {},
           'contextMenu': widget.contextMenu?.toMap() ?? {},
           'windowId': widget.windowId,
-          'initialUserScripts': widget.initialUserScripts?.map((e) => e.toMap()).toList() ?? [],
+          'initialUserScripts': widget.initialUserScripts?.map((e) => e.toMap())?.toList() ?? [],
         },
         creationParamsCodec: const StandardMessageCodec(),
       );

@@ -122,7 +122,7 @@ class HeadlessInAppWebView implements WebView {
               'contextMenu': this.contextMenu?.toMap() ?? {},
               'windowId': this.windowId,
               'initialUserScripts':
-                  this.initialUserScripts?.map((e) => e.toMap()).toList() ?? [],
+                  this.initialUserScripts?.map((e) => e.toMap())?.toList() ?? [],
             });
     await _sharedChannel.invokeMethod('createHeadlessWebView', args);
   }

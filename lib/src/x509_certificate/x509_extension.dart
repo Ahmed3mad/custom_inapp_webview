@@ -54,7 +54,7 @@ class X509Extension {
     var result = <String>[];
     var sub = <ASN1Object>[];
     try {
-      sub = block?.sub?.last.sub?.last.sub ?? <ASN1Object>[];
+      sub = block?.sub?.last?.sub?.last?.sub ?? <ASN1Object>[];
     } catch (e) {}
 
     for (var item in sub) {
@@ -84,7 +84,7 @@ class X509Extension {
     List<String> result = [];
     var sub = <ASN1Object>[];
     try {
-      sub = block?.sub?.last.sub?.last.sub ?? <ASN1Object>[];
+      sub = block?.sub?.last?.sub?.last?.sub ?? <ASN1Object>[];
     } catch (e) {}
     for (var item in sub) {
       var name = generalName(item: item);
@@ -96,7 +96,7 @@ class X509Extension {
   }
 
   String generalName({@required ASN1Object item}) {
-    var nameType = item.identifier?.tagNumber().toValue();
+    var nameType = item.identifier?.tagNumber()?.toValue();
     if (nameType == null) {
       return null;
     }
@@ -104,7 +104,7 @@ class X509Extension {
       case 0:
         String name;
         try {
-          name = item.sub?.last.sub?.last.value as String;
+          name = item.sub?.last?.sub?.last?.value as String;
         } catch (e) {}
         return name;
       case 1:
@@ -253,7 +253,7 @@ class AuthorityInfoAccessExtension extends X509Extension {
 
   Map<String, dynamic> toMap() {
     return {
-      "infoAccess": infoAccess?.map((e) => e.toMap()).toList(),
+      "infoAccess": infoAccess?.map((e) => e.toMap())?.toList(),
     };
   }
 
@@ -278,7 +278,7 @@ class AuthorityKeyIdentifierExtension extends X509Extension {
     ASN1Object sub;
     try {
       sub = sequence.firstWhere(
-          (element) => element.identifier?.tagNumber().toValue() == 0);
+          (element) => element.identifier?.tagNumber()?.toValue() == 0);
       return sub.encoded;
     } catch (e) {}
     return null;
@@ -292,7 +292,7 @@ class AuthorityKeyIdentifierExtension extends X509Extension {
     ASN1Object sub;
     try {
       sub = sequence.firstWhere(
-          (element) => element.identifier?.tagNumber().toValue() == 1);
+          (element) => element.identifier?.tagNumber()?.toValue() == 1);
       List<String> result;
       if (sub.sub != null) {
         result = <String>[];
@@ -316,7 +316,7 @@ class AuthorityKeyIdentifierExtension extends X509Extension {
     ASN1Object sub;
     try {
       sub = sequence.firstWhere(
-          (element) => element.identifier?.tagNumber().toValue() == 2);
+          (element) => element.identifier?.tagNumber()?.toValue() == 2);
       return sub.encoded;
     } catch (e) {}
     return null;
@@ -377,7 +377,7 @@ class CertificatePolicy {
   Map<String, dynamic> toMap() {
     return {
       "oid": oid,
-      "qualifiers": qualifiers?.map((e) => e.toMap()).toList(),
+      "qualifiers": qualifiers?.map((e) => e.toMap())?.toList(),
     };
   }
 
@@ -438,7 +438,7 @@ class CertificatePoliciesExtension extends X509Extension {
 
   Map<String, dynamic> toMap() {
     return {
-      "policies": policies?.map((e) => e.toMap()).toList(),
+      "policies": policies?.map((e) => e.toMap())?.toList(),
     };
   }
 

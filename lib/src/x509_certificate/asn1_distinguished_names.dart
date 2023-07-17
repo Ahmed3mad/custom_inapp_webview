@@ -89,7 +89,7 @@ class ASN1DistinguishedNames {
 
       String value;
       try {
-        value = oidBlock.parent?.sub?.last.value as String;
+        value = oidBlock.parent?.sub?.last?.value as String;
       } catch (e) {}
       if (value != null) {
         result += quote(value);

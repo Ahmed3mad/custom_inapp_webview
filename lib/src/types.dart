@@ -1195,7 +1195,7 @@ class URLCredential {
     return {
       "username": username,
       "password": password,
-      "iosCertificates": iosCertificates?.map((e) => e.toMap()).toList(),
+      "iosCertificates": iosCertificates?.map((e) => e.toMap())?.toList(),
       "iosPersistence": iosPersistence?.toValue(),
     };
   }
@@ -1654,7 +1654,7 @@ class URLProtectionSpace {
       "sslError": sslError?.toMap(),
       "iosAuthenticationMethod": iosAuthenticationMethod,
       "iosDistinguishedNames":
-          iosDistinguishedNames?.map((e) => e.toMap()).toList(),
+          iosDistinguishedNames?.map((e) => e.toMap())?.toList(),
       "iosReceivesCredentialSecurely": iosReceivesCredentialSecurely,
       "iosIsProxy": iosIsProxy,
       "iosProxyType": iosProxyType?.toValue()

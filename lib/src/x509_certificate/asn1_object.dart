@@ -67,7 +67,7 @@ class ASN1Object {
 
   String printAsn1({insets = ""}) {
     var output = insets;
-    output += identifier?.description.toUpperCase() ?? "";
+    output += identifier?.description?.toUpperCase() ?? "";
     output += (value != null ? ": $value" : "");
     if (identifier?.typeClass() == ASN1IdentifierClass.UNIVERSAL &&
         identifier?.tagNumber() == ASN1IdentifierTagNumber.OBJECT_IDENTIFIER) {
