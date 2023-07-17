@@ -131,7 +131,7 @@ class IOSInAppWebViewOptions
   ///The default value of this property is `null`.
   ///
   ///**NOTE**: available on iOS 14.0+.
-  String mediaType;
+  String? mediaType;
 
   ///The scale factor by which the web view scales content relative to its bounds.
   ///The default value of this property is `1.0`, which displays the content without any scaling.
@@ -207,7 +207,7 @@ class IOSInAppWebViewOptions
   ///This URL must be a file-based URL (using the `file://` scheme).
   ///Specify the same value as the [WebView.initialUrlRequest] parameter to prevent WebView from reading any other content.
   ///Specify a directory to give WebView permission to read additional files in the specified directory.
-  Uri allowingReadAccessTo;
+  Uri? allowingReadAccessTo;
 
   ///Set to `true` to disable the context menu (copy, select, etc.) that is shown when the user emits a long press event on a HTML link.
   ///This is implemented using also JavaScript, so it must be enabled or it won't work.
@@ -248,7 +248,7 @@ class IOSInAppWebViewOptions
       this.allowingReadAccessTo,
       this.disableLongPressContextMenuOnLinks = false}) {
     assert(
-        allowingReadAccessTo == null || allowingReadAccessTo.isScheme("file"));
+        allowingReadAccessTo == null || allowingReadAccessTo!.isScheme("file"));
   }
 
   @override
@@ -326,7 +326,7 @@ class IOSInAppWebViewOptions
     options.isFraudulentWebsiteWarningEnabled =
         map["isFraudulentWebsiteWarningEnabled"];
     options.selectionGranularity =
-        IOSWKSelectionGranularity.fromValue(map["selectionGranularity"]);
+        IOSWKSelectionGranularity.fromValue(map["selectionGranularity"])!;
     options.dataDetectorTypes = dataDetectorTypes;
     options.sharedCookiesEnabled = map["sharedCookiesEnabled"];
     options.automaticallyAdjustsScrollIndicatorInsets =
@@ -334,7 +334,7 @@ class IOSInAppWebViewOptions
     options.accessibilityIgnoresInvertColors =
         map["accessibilityIgnoresInvertColors"];
     options.decelerationRate =
-        IOSUIScrollViewDecelerationRate.fromValue(map["decelerationRate"]);
+        IOSUIScrollViewDecelerationRate.fromValue(map["decelerationRate"])!;
     options.alwaysBounceVertical = map["alwaysBounceVertical"];
     options.alwaysBounceHorizontal = map["alwaysBounceHorizontal"];
     options.scrollsToTop = map["scrollsToTop"];
@@ -343,7 +343,7 @@ class IOSInAppWebViewOptions
     options.minimumZoomScale = map["minimumZoomScale"];
     options.contentInsetAdjustmentBehavior =
         IOSUIScrollViewContentInsetAdjustmentBehavior.fromValue(
-            map["contentInsetAdjustmentBehavior"]);
+            map["contentInsetAdjustmentBehavior"])!;
     options.isDirectionalLockEnabled = map["isDirectionalLockEnabled"];
     options.mediaType = map["mediaType"];
     options.pageZoom = map["pageZoom"];

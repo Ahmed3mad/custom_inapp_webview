@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:core';
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../_static_channel.dart';
@@ -11,10 +10,10 @@ import '../../types.dart';
 
 ///Class represents the iOS controller that contains only iOS-specific methods for the WebView.
 class IOSInAppWebViewController {
-  MethodChannel _channel;
+  late MethodChannel _channel;
   static MethodChannel _staticChannel = IN_APP_WEBVIEW_STATIC_CHANNEL;
 
-  IOSInAppWebViewController({@required MethodChannel channel}) {
+  IOSInAppWebViewController({required MethodChannel channel}) {
     this._channel = channel;
   }
 
@@ -34,8 +33,8 @@ class IOSInAppWebViewController {
   ///**NOTE**: available only on iOS 14.0+.
   ///
   ///**Official iOS API**: https://developer.apple.com/documentation/webkit/wkwebview/3650490-createpdf
-  Future<Uint8List> createPdf(
-      {IOSWKPDFConfiguration iosWKPdfConfiguration}) async {
+  Future<Uint8List?> createPdf(
+      {IOSWKPDFConfiguration? iosWKPdfConfiguration}) async {
     Map<String, dynamic> args = <String, dynamic>{};
     args.putIfAbsent(
         'iosWKPdfConfiguration', () => iosWKPdfConfiguration?.toMap());
@@ -48,7 +47,7 @@ class IOSInAppWebViewController {
   ///**NOTE**: available only on iOS 14.0+.
   ///
   ///**Official iOS API**: https://developer.apple.com/documentation/webkit/wkwebview/3650491-createwebarchivedata
-  Future<Uint8List> createWebArchiveData() async {
+  Future<Uint8List?> createWebArchiveData() async {
     Map<String, dynamic> args = <String, dynamic>{};
     return await _channel.invokeMethod('createWebArchiveData', args);
   }

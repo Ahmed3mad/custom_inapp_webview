@@ -6,8 +6,6 @@ class AndroidWebViewFeature {
   static const MethodChannel _channel = const MethodChannel(
       'com.pichillilorenzo/flutter_inappwebview_android_webviewfeature');
 
-  static Future<dynamic> _handleMethod(MethodCall call) async {}
-
   final String _value;
 
   const AndroidWebViewFeature._internal(this._value);
@@ -56,7 +54,7 @@ class AndroidWebViewFeature {
     AndroidWebViewFeature.WEB_VIEW_RENDERER_TERMINATE,
   ].toSet();
 
-  static AndroidWebViewFeature fromValue(String value) {
+  static AndroidWebViewFeature? fromValue(String? value) {
     if (value != null) {
       try {
         return AndroidWebViewFeature.values

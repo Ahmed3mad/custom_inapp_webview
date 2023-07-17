@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'asn1_object.dart';
 
 class ASN1DistinguishedNames {
@@ -23,7 +21,7 @@ class ASN1DistinguishedNames {
     ASN1DistinguishedNames.EMAIL,
   ].toSet();
 
-  static ASN1DistinguishedNames fromValue(String oid) {
+  static ASN1DistinguishedNames? fromValue(String? oid) {
     if (oid != null) {
       try {
         return ASN1DistinguishedNames.values
@@ -73,7 +71,7 @@ class ASN1DistinguishedNames {
   int get hashCode => _oid.hashCode;
 
   /// Format subject/issuer information in RFC1779
-  static String string({@required ASN1Object block}) {
+  static String string({required ASN1Object block}) {
     var result = "";
     var oidNames = ASN1DistinguishedNames.values;
     for (var oidName in oidNames) {
@@ -87,9 +85,9 @@ class ASN1DistinguishedNames {
       result += oidName.representation();
       result += "=";
 
-      String value;
+      String? value;
       try {
-        value = oidBlock.parent?.sub?.last?.value as String;
+        value = oidBlock.parent?.sub?.last.value as String?;
       } catch (e) {}
       if (value != null) {
         result += quote(value);

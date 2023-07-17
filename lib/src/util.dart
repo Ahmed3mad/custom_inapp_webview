@@ -1,9 +1,44 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+class ViewIdGenerator {
+  static int _count = 0;
+
+  /// Math.Random()-based RNG. All platforms, fast, not cryptographically strong. Optional Seed passable.
+  static Uint8List mathRNG({int seed = -1}) {
+    var b = Uint8List(16);
+
+    var rand = (seed == -1) ? Random() : Random(seed);
+
+    for (var i = 0; i < 16; i++) {
+      b[i] = rand.nextInt(256);
+    }
+
+    (seed == -1) ? b.shuffle() : b.shuffle(Random(seed));
+
+    return b;
+  }
+
+  /// Crypto-Strong RNG. All platforms, unknown speed, cryptographically strong (theoretically)
+  static Uint8List cryptoRNG() {
+    var b = Uint8List(16);
+    var rand = Random.secure();
+    for (var i = 0; i < 16; i++) {
+      b[i] = rand.nextInt(256);
+    }
+    return b;
+  }
+
+  static String generateId() {
+    _count++;
+    return _count.toString() + cryptoRNG().map((e) => e.toString()).join('');
+  }
+}
+
 extension UtilColor on Color {
-  static Color fromStringRepresentation(String colorValue) {
+  static Color? fromStringRepresentation(String colorValue) {
     if (colorValue.startsWith("#")) {
       return fromHex(colorValue);
     } else if (colorValue.startsWith("rgb(")) {
@@ -334,7 +369,7 @@ extension UtilColor on Color {
     return null;
   }
 
-  static Color fromHex(String hexString) {
+  static Color? fromHex(String? hexString) {
     if (hexString == null) {
       return null;
     }
@@ -351,7 +386,7 @@ extension UtilColor on Color {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
-  static Color fromRgbString(String rgbString) {
+  static Color? fromRgbString(String? rgbString) {
     if (rgbString == null) {
       return null;
     }
@@ -365,7 +400,7 @@ extension UtilColor on Color {
     return Color.fromRGBO(rgbValues[0], rgbValues[1], rgbValues[2], 1);
   }
 
-  static Color fromRgbaString(String rgbaString) {
+  static Color? fromRgbaString(String? rgbaString) {
     if (rgbaString == null) {
       return null;
     }
@@ -380,7 +415,7 @@ extension UtilColor on Color {
         int.parse(rgbaValues[2]), double.parse(rgbaValues[3]));
   }
 
-  static Color fromHlsString(String hlsString) {
+  static Color? fromHlsString(String? hlsString) {
     if (hlsString == null) {
       return null;
     }
@@ -395,7 +430,7 @@ extension UtilColor on Color {
     return Color.fromRGBO(rgbValues[0], rgbValues[1], rgbValues[2], 1);
   }
 
-  static Color fromHlsaString(String hlsaString) {
+  static Color? fromHlsaString(String? hlsaString) {
     if (hlsaString == null) {
       return null;
     }

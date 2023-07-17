@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:core';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../_static_channel.dart';
@@ -10,10 +9,10 @@ import '../../types.dart';
 
 ///Class represents the Android controller that contains only android-specific methods for the WebView.
 class AndroidInAppWebViewController {
-  MethodChannel _channel;
+  late MethodChannel _channel;
   static MethodChannel _staticChannel = IN_APP_WEBVIEW_STATIC_CHANNEL;
 
-  AndroidInAppWebViewController({@required MethodChannel channel}) {
+  AndroidInAppWebViewController({required MethodChannel channel}) {
     this._channel = channel;
   }
 
@@ -63,9 +62,9 @@ class AndroidInAppWebViewController {
   ///the current page may not have changed. Also, there may have been redirects resulting in a different URL to that originally requested.
   ///
   ///**Official Android API**: https://developer.android.com/reference/android/webkit/WebView#getOriginalUrl()
-  Future<Uri> getOriginalUrl() async {
+  Future<Uri?> getOriginalUrl() async {
     Map<String, dynamic> args = <String, dynamic>{};
-    String url = await _channel.invokeMethod('getOriginalUrl', args);
+    String? url = await _channel.invokeMethod('getOriginalUrl', args);
     return url != null ? Uri.parse(url) : null;
   }
 
@@ -75,7 +74,7 @@ class AndroidInAppWebViewController {
   ///[bottom] `true` to jump to bottom of page.
   ///
   ///**Official Android API**: https://developer.android.com/reference/android/webkit/WebView#pageDown(boolean)
-  Future<bool> pageDown({@required bool bottom}) async {
+  Future<bool> pageDown({required bool bottom}) async {
     Map<String, dynamic> args = <String, dynamic>{};
     args.putIfAbsent("bottom", () => bottom);
     return await _channel.invokeMethod('pageDown', args);
@@ -87,7 +86,7 @@ class AndroidInAppWebViewController {
   ///[bottom] `true` to jump to the top of the page.
   ///
   ///**Official Android API**: https://developer.android.com/reference/android/webkit/WebView#pageUp(boolean)
-  Future<bool> pageUp({@required bool top}) async {
+  Future<bool> pageUp({required bool top}) async {
     Map<String, dynamic> args = <String, dynamic>{};
     args.putIfAbsent("top", () => top);
     return await _channel.invokeMethod('pageUp', args);
@@ -138,9 +137,9 @@ class AndroidInAppWebViewController {
   ///**NOTE**: available only on Android 27+.
   ///
   ///**Official Android API**: https://developer.android.com/reference/androidx/webkit/WebViewCompat#getSafeBrowsingPrivacyPolicyUrl()
-  static Future<Uri> getSafeBrowsingPrivacyPolicyUrl() async {
+  static Future<Uri?> getSafeBrowsingPrivacyPolicyUrl() async {
     Map<String, dynamic> args = <String, dynamic>{};
-    String url = await _staticChannel.invokeMethod(
+    String? url = await _staticChannel.invokeMethod(
         'getSafeBrowsingPrivacyPolicyUrl', args);
     return url != null ? Uri.parse(url) : null;
   }
@@ -163,7 +162,7 @@ class AndroidInAppWebViewController {
   ///
   ///**Official Android API**: https://developer.android.com/reference/androidx/webkit/WebViewCompat#getSafeBrowsingPrivacyPolicyUrl()
   static Future<bool> setSafeBrowsingWhitelist(
-      {@required List<String> hosts}) async {
+      {required List<String> hosts}) async {
     Map<String, dynamic> args = <String, dynamic>{};
     args.putIfAbsent('hosts', () => hosts);
     return await _staticChannel.invokeMethod('setSafeBrowsingWhitelist', args);
@@ -180,9 +179,9 @@ class AndroidInAppWebViewController {
   ///**NOTE**: available only on Android 26+.
   ///
   ///**Official Android API**: https://developer.android.com/reference/androidx/webkit/WebViewCompat#getCurrentWebViewPackage(android.content.Context)
-  static Future<AndroidWebViewPackageInfo> getCurrentWebViewPackage() async {
+  static Future<AndroidWebViewPackageInfo?> getCurrentWebViewPackage() async {
     Map<String, dynamic> args = <String, dynamic>{};
-    Map<String, dynamic> packageInfo =
+    Map<String, dynamic>? packageInfo =
         (await _staticChannel.invokeMethod('getCurrentWebViewPackage', args))
             ?.cast<String, dynamic>();
     return AndroidWebViewPackageInfo.fromMap(packageInfo);

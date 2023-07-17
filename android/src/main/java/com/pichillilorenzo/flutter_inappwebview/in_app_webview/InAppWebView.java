@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -78,11 +80,14 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -182,6 +187,25 @@ final public class InAppWebView extends InputAwareWebView {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && WebViewFeature.isFeatureSupported(WebViewFeature.WEB_VIEW_RENDERER_CLIENT_BASIC_USAGE)) {
       inAppWebViewRenderProcessClient = new InAppWebViewRenderProcessClient(channel);
       WebViewCompat.setWebViewRenderProcessClient(this, inAppWebViewRenderProcessClient);
+    }
+
+    userContentController.addPluginScript(PromisePolyfillJS.PROMISE_POLYFILL_JS_PLUGIN_SCRIPT);
+    userContentController.addPluginScript(JavaScriptBridgeJS.JAVASCRIPT_BRIDGE_JS_PLUGIN_SCRIPT);
+    userContentController.addPluginScript(ConsoleLogJS.CONSOLE_LOG_JS_PLUGIN_SCRIPT);
+    userContentController.addPluginScript(PrintJS.PRINT_JS_PLUGIN_SCRIPT);
+    userContentController.addPluginScript(OnWindowBlurEventJS.ON_WINDOW_BLUR_EVENT_JS_PLUGIN_SCRIPT);
+    userContentController.addPluginScript(OnWindowFocusEventJS.ON_WINDOW_FOCUS_EVENT_JS_PLUGIN_SCRIPT);
+    if (options.useShouldInterceptAjaxRequest) {
+      userContentController.addPluginScript(InterceptAjaxRequestJS.INTERCEPT_AJAX_REQUEST_JS_PLUGIN_SCRIPT);
+    }
+    if (options.useShouldInterceptFetchRequest) {
+      userContentController.addPluginScript(InterceptFetchRequestJS.INTERCEPT_FETCH_REQUEST_JS_PLUGIN_SCRIPT);
+    }
+    if (options.useOnLoadResource) {
+      userContentController.addPluginScript(OnLoadResourceJS.ON_LOAD_RESOURCE_JS_PLUGIN_SCRIPT);
+    }
+    if (!options.useHybridComposition) {
+      userContentController.addPluginScript(PluginScriptsUtil.CHECK_GLOBAL_KEY_DOWN_EVENT_TO_HIDE_CONTEXT_MENU_JS_PLUGIN_SCRIPT);
     }
 
     if (options.useOnDownloadStart)
@@ -304,6 +328,18 @@ final public class InAppWebView extends InputAwareWebView {
       options.scrollBarFadeDuration = getScrollBarFadeDuration();
     }
     setVerticalScrollbarPosition(options.verticalScrollbarPosition);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      if (options.verticalScrollbarThumbColor != null)
+        setVerticalScrollbarThumbDrawable(new ColorDrawable(Color.parseColor(options.verticalScrollbarThumbColor)));
+      if (options.verticalScrollbarTrackColor != null)
+        setVerticalScrollbarTrackDrawable(new ColorDrawable(Color.parseColor(options.verticalScrollbarTrackColor)));
+      if (options.horizontalScrollbarThumbColor != null)
+        setHorizontalScrollbarThumbDrawable(new ColorDrawable(Color.parseColor(options.horizontalScrollbarThumbColor)));
+      if (options.horizontalScrollbarTrackColor != null)
+        setHorizontalScrollbarTrackDrawable(new ColorDrawable(Color.parseColor(options.horizontalScrollbarTrackColor)));
+    }
+
     setOverScrollMode(options.overScrollMode);
     if (options.networkAvailable != null) {
       setNetworkAvailable(options.networkAvailable);
@@ -436,25 +472,6 @@ final public class InAppWebView extends InputAwareWebView {
         return false;
       }
     });
-
-    userContentController.addPluginScript(PromisePolyfillJS.PROMISE_POLYFILL_JS_PLUGIN_SCRIPT);
-    userContentController.addPluginScript(JavaScriptBridgeJS.JAVASCRIPT_BRIDGE_JS_PLUGIN_SCRIPT);
-    userContentController.addPluginScript(ConsoleLogJS.CONSOLE_LOG_JS_PLUGIN_SCRIPT);
-    userContentController.addPluginScript(PrintJS.PRINT_JS_PLUGIN_SCRIPT);
-    userContentController.addPluginScript(OnWindowBlurEventJS.ON_WINDOW_BLUR_EVENT_JS_PLUGIN_SCRIPT);
-    userContentController.addPluginScript(OnWindowFocusEventJS.ON_WINDOW_FOCUS_EVENT_JS_PLUGIN_SCRIPT);
-    if (options.useShouldInterceptAjaxRequest) {
-      userContentController.addPluginScript(InterceptAjaxRequestJS.INTERCEPT_AJAX_REQUEST_JS_PLUGIN_SCRIPT);
-    }
-    if (options.useShouldInterceptFetchRequest) {
-      userContentController.addPluginScript(InterceptFetchRequestJS.INTERCEPT_FETCH_REQUEST_JS_PLUGIN_SCRIPT);
-    }
-    if (options.useOnLoadResource) {
-      userContentController.addPluginScript(OnLoadResourceJS.ON_LOAD_RESOURCE_JS_PLUGIN_SCRIPT);
-    }
-    if (!options.useHybridComposition) {
-      userContentController.addPluginScript(PluginScriptsUtil.CHECK_GLOBAL_KEY_DOWN_EVENT_TO_HIDE_CONTEXT_MENU_JS_PLUGIN_SCRIPT);
-    }
   }
 
   public void setIncognito(boolean enabled) {
@@ -549,31 +566,10 @@ final public class InAppWebView extends InputAwareWebView {
       @Override
       public void run() {
         try {
-          int height = (int) (getContentHeight() * scale + 0.5);
-
-          Bitmap b = Bitmap.createBitmap(getWidth(),
-                  height, Bitmap.Config.ARGB_8888);
-          Canvas c = new Canvas(b);
-
+          Bitmap resized = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+          Canvas c = new Canvas(resized);
+          c.translate(-getScrollX(), -getScrollY());
           draw(c);
-
-          int scrollY = getScrollY();
-          int measuredHeight = getMeasuredHeight();
-          int bitmapHeight = b.getHeight();
-
-          int scrollOffset = (scrollY + measuredHeight > bitmapHeight)
-                  ? (bitmapHeight - measuredHeight) : scrollY;
-
-          if (scrollOffset < 0) {
-            scrollOffset = 0;
-          }
-
-          int rectX = 0;
-          int rectY = scrollOffset;
-          int rectWidth = b.getWidth();
-          int rectHeight = measuredHeight;
-
-          Bitmap resized = Bitmap.createBitmap(b, rectX, rectY, rectWidth, rectHeight);
 
           ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
           Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.PNG;
@@ -582,12 +578,12 @@ final public class InAppWebView extends InputAwareWebView {
           if (screenshotConfiguration != null) {
             Map<String, Double> rect = (Map<String, Double>) screenshotConfiguration.get("rect");
             if (rect != null) {
-              rectX = (int) Math.floor(rect.get("x") * scale + 0.5);
-              rectY = (int) Math.floor(rect.get("y") * scale + 0.5);
-              rectWidth = Math.min(resized.getWidth(), (int) Math.floor(rect.get("width") * scale + 0.5));
-              rectHeight = Math.min(resized.getHeight(), (int) Math.floor(rect.get("height") * scale + 0.5));
+              int rectX = (int) Math.floor(rect.get("x") * scale + 0.5);
+              int rectY = (int) Math.floor(rect.get("y") * scale + 0.5);
+              int rectWidth = Math.min(resized.getWidth(), (int) Math.floor(rect.get("width") * scale + 0.5));
+              int rectHeight = Math.min(resized.getHeight(), (int) Math.floor(rect.get("height") * scale + 0.5));
               resized = Bitmap.createBitmap(
-                      b,
+                      resized,
                       rectX,
                       rectY,
                       rectWidth,
@@ -916,6 +912,20 @@ final public class InAppWebView extends InputAwareWebView {
       setRendererPriorityPolicy(
               (int) newOptions.rendererPriorityPolicy.get("rendererRequestedPriority"),
               (boolean) newOptions.rendererPriorityPolicy.get("waivedWhenNotVisible"));
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      if (newOptionsMap.get("verticalScrollbarThumbColor") != null && !Util.objEquals(options.verticalScrollbarThumbColor, newOptions.verticalScrollbarThumbColor))
+        setVerticalScrollbarThumbDrawable(new ColorDrawable(Color.parseColor(newOptions.verticalScrollbarThumbColor)));
+
+      if (newOptionsMap.get("verticalScrollbarTrackColor") != null && !Util.objEquals(options.verticalScrollbarTrackColor, newOptions.verticalScrollbarTrackColor))
+        setVerticalScrollbarTrackDrawable(new ColorDrawable(Color.parseColor(newOptions.verticalScrollbarTrackColor)));
+
+      if (newOptionsMap.get("horizontalScrollbarThumbColor") != null && !Util.objEquals(options.horizontalScrollbarThumbColor, newOptions.horizontalScrollbarThumbColor))
+        setHorizontalScrollbarThumbDrawable(new ColorDrawable(Color.parseColor(newOptions.horizontalScrollbarThumbColor)));
+
+      if (newOptionsMap.get("horizontalScrollbarTrackColor") != null && !Util.objEquals(options.horizontalScrollbarTrackColor, newOptions.horizontalScrollbarTrackColor))
+        setHorizontalScrollbarTrackDrawable(new ColorDrawable(Color.parseColor(newOptions.horizontalScrollbarTrackColor)));
     }
 
     options = newOptions;

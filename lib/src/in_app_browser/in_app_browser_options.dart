@@ -38,22 +38,22 @@ class BrowserOptions {
 ///Class that represents the options that can be used for an [InAppBrowser] WebView.
 class InAppBrowserClassOptions {
   ///Cross-platform options.
-  InAppBrowserOptions crossPlatform;
+  late InAppBrowserOptions crossPlatform;
 
   ///Android-specific options.
-  AndroidInAppBrowserOptions android;
+  late AndroidInAppBrowserOptions android;
 
   ///iOS-specific options.
-  IOSInAppBrowserOptions ios;
+  late IOSInAppBrowserOptions ios;
 
   ///WebView options.
-  InAppWebViewGroupOptions inAppWebViewGroupOptions;
+  late InAppWebViewGroupOptions inAppWebViewGroupOptions;
 
   InAppBrowserClassOptions(
-      {InAppBrowserOptions crossPlatform,
-      AndroidInAppBrowserOptions android,
-      IOSInAppBrowserOptions ios,
-      InAppWebViewGroupOptions inAppWebViewGroupOptions}) {
+      {InAppBrowserOptions? crossPlatform,
+      AndroidInAppBrowserOptions? android,
+      IOSInAppBrowserOptions? ios,
+      InAppWebViewGroupOptions? inAppWebViewGroupOptions}) {
     this.crossPlatform = crossPlatform ?? InAppBrowserOptions();
     this.android = android ?? AndroidInAppBrowserOptions();
     this.ios = ios ?? IOSInAppBrowserOptions();
@@ -126,7 +126,7 @@ class InAppBrowserOptions
   bool hideToolbarTop;
 
   ///Set the custom background color of the toolbar at the top.
-  Color toolbarTopBackgroundColor;
+  Color? toolbarTopBackgroundColor;
 
   ///Set to `true` to hide the url bar on the toolbar at the top. The default value is `false`.
   bool hideUrlBar;
