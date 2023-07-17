@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'x509_certificate.dart';
 import 'asn1_object.dart';
 import 'oid.dart';
@@ -9,11 +11,11 @@ import 'asn1_decoder.dart';
 class X509Extension {
   ASN1Object block;
 
-  X509Extension({required this.block});
+  X509Extension({@required this.block});
 
-  String? get oid => block?.subAtIndex(0)?.value;
+  String get oid => block?.subAtIndex(0)?.value;
 
-  String? get name => OID.fromValue(oid)?.name();
+  String get name => OID.fromValue(oid)?.name();
 
   bool get isCritical {
     if ((block?.sub?.length ?? 0) > 2) {
@@ -93,33 +95,33 @@ class X509Extension {
     return result;
   }
 
-  String? generalName({required ASN1Object item}) {
+  String generalName({@required ASN1Object item}) {
     var nameType = item.identifier?.tagNumber().toValue();
     if (nameType == null) {
       return null;
     }
     switch (nameType) {
       case 0:
-        String? name;
+        String name;
         try {
-          name = item.sub?.last.sub?.last.value as String?;
+          name = item.sub?.last.sub?.last.value as String;
         } catch (e) {}
         return name;
       case 1:
       case 2:
       case 6:
-        String? name = item.value as String?;
+        String name = item.value as String;
         return name;
       case 4:
         return ASN1DistinguishedNames.string(block: item);
       case 7:
-        var ip = item.value as List<int>?;
+        var ip = item.value as List<int>;
         if (ip != null) {
           return ip.map((e) => e.toString()).join(".");
         }
         break;
       case 8:
-        var value = item.value as String?;
+        var value = item.value as String;
         if (value != null) {
           try {
             var data = utf8.encode(value);
@@ -137,13 +139,13 @@ class X509Extension {
 
 /// Recognition for Basic Constraint Extension (2.5.29.19)
 class BasicConstraintExtension extends X509Extension {
-  BasicConstraintExtension({required block}) : super(block: block);
+  BasicConstraintExtension({@required block}) : super(block: block);
 
   bool get isCA =>
-      valueAsBlock?.subAtIndex(0)?.subAtIndex(0)?.value as bool? ?? false;
+      valueAsBlock?.subAtIndex(0)?.subAtIndex(0)?.value as bool ?? false;
 
-  int? get pathLenConstraint {
-    var data = valueAsBlock?.subAtIndex(0)?.subAtIndex(0)?.value as List<int>?;
+  int get pathLenConstraint {
+    var data = valueAsBlock?.subAtIndex(0)?.subAtIndex(0)?.value as List<int>;
     if (data != null) {
       return data.length;
     }
@@ -169,10 +171,10 @@ class BasicConstraintExtension extends X509Extension {
 
 /// Recognition for Subject Key Identifier Extension (2.5.29.14)
 class SubjectKeyIdentifierExtension extends X509Extension {
-  SubjectKeyIdentifierExtension({required block}) : super(block: block);
+  SubjectKeyIdentifierExtension({@required block}) : super(block: block);
 
   @override
-  List<int>? get value {
+  List<int> get value {
     var rawValue = valueAsBlock?.encoded;
     if (rawValue != null) {
       return ASN1DERDecoder.sequenceContent(data: rawValue.toList());
@@ -200,7 +202,7 @@ class AuthorityInfoAccess {
   String method;
   String location;
 
-  AuthorityInfoAccess({required this.method, required this.location});
+  AuthorityInfoAccess({@required this.method, @required this.location});
 
   @override
   String toString() {
@@ -221,13 +223,13 @@ class AuthorityInfoAccess {
 
 /// Recognition for Authority Info Access Extension (1.3.6.1.5.5.7.1.1)
 class AuthorityInfoAccessExtension extends X509Extension {
-  AuthorityInfoAccessExtension({required block}) : super(block: block);
+  AuthorityInfoAccessExtension({@required block}) : super(block: block);
 
-  List<AuthorityInfoAccess>? get infoAccess {
+  List<AuthorityInfoAccess> get infoAccess {
     if (valueAsBlock == null) {
       return null;
     }
-    var subs = valueAsBlock!.subAtIndex(0)?.sub ?? <ASN1Object>[];
+    var subs = valueAsBlock.subAtIndex(0)?.sub ?? <ASN1Object>[];
     List<AuthorityInfoAccess> result = <AuthorityInfoAccess>[];
     subs.forEach((sub) {
       var oidData = sub.subAtIndex(0)?.encoded;
@@ -262,13 +264,13 @@ class AuthorityInfoAccessExtension extends X509Extension {
 
 /// Recognition for Authority Key Identifier Extension (2.5.29.35)
 class AuthorityKeyIdentifierExtension extends X509Extension {
-  AuthorityKeyIdentifierExtension({required block}) : super(block: block);
+  AuthorityKeyIdentifierExtension({@required block}) : super(block: block);
 
   ///AuthorityKeyIdentifier ::= SEQUENCE {
   ///   keyIdentifier             [0] KeyIdentifier           OPTIONAL,
   ///   authorityCertIssuer       [1] GeneralNames            OPTIONAL,
   ///   authorityCertSerialNumber [2] CertificateSerialNumber OPTIONAL  }
-  List<int>? get keyIdentifier {
+  List<int> get keyIdentifier {
     var sequence = valueAsBlock?.subAtIndex(0)?.sub;
     if (sequence == null) {
       return null;
@@ -282,7 +284,7 @@ class AuthorityKeyIdentifierExtension extends X509Extension {
     return null;
   }
 
-  List<String>? get certificateIssuer {
+  List<String> get certificateIssuer {
     var sequence = valueAsBlock?.subAtIndex(0)?.sub;
     if (sequence == null) {
       return null;
@@ -306,7 +308,7 @@ class AuthorityKeyIdentifierExtension extends X509Extension {
     return null;
   }
 
-  List<int>? get serialNumber {
+  List<int> get serialNumber {
     var sequence = valueAsBlock?.subAtIndex(0)?.sub;
     if (sequence == null) {
       return null;
@@ -340,9 +342,9 @@ class AuthorityKeyIdentifierExtension extends X509Extension {
 
 class CertificatePolicyQualifier {
   String oid;
-  String? value;
+  String value;
 
-  CertificatePolicyQualifier({required this.oid, this.value});
+  CertificatePolicyQualifier({@required this.oid, this.value});
 
   @override
   String toString() {
@@ -363,9 +365,9 @@ class CertificatePolicyQualifier {
 
 class CertificatePolicy {
   String oid;
-  List<CertificatePolicyQualifier>? qualifiers;
+  List<CertificatePolicyQualifier> qualifiers;
 
-  CertificatePolicy({required this.oid, this.qualifiers});
+  CertificatePolicy({@required this.oid, this.qualifiers});
 
   @override
   String toString() {
@@ -386,18 +388,18 @@ class CertificatePolicy {
 
 /// Recognition for Certificate Policies Extension (2.5.29.32)
 class CertificatePoliciesExtension extends X509Extension {
-  CertificatePoliciesExtension({required block}) : super(block: block);
+  CertificatePoliciesExtension({@required block}) : super(block: block);
 
-  List<CertificatePolicy>? get policies {
+  List<CertificatePolicy> get policies {
     if (valueAsBlock == null) {
       return null;
     }
-    var subs = valueAsBlock!.subAtIndex(0)?.sub ?? <ASN1Object>[];
+    var subs = valueAsBlock.subAtIndex(0)?.sub ?? <ASN1Object>[];
 
     List<CertificatePolicy> result = <CertificatePolicy>[];
     subs.forEach((sub) {
       var data = sub.subAtIndex(0)?.encoded;
-      String? oid;
+      String oid;
       if (data != null) {
         oid = ASN1DERDecoder.decodeOid(contentData: data.toList());
         if (oid == null) {
@@ -407,20 +409,20 @@ class CertificatePoliciesExtension extends X509Extension {
         return;
       }
 
-      List<CertificatePolicyQualifier>? qualifiers;
+      List<CertificatePolicyQualifier> qualifiers;
       var subQualifiers = sub.subAtIndex(1);
       if (subQualifiers != null && subQualifiers.sub != null) {
         qualifiers = <CertificatePolicyQualifier>[];
-        subQualifiers.sub!.forEach((sub) {
+        subQualifiers.sub.forEach((sub) {
           var rawValue = sub.subAtIndex(0)?.encoded;
-          String? oid;
+          String oid;
           if (rawValue != null) {
             oid = ASN1DERDecoder.decodeOid(contentData: rawValue.toList());
             if (oid == null) {
               return;
             }
             var value = sub.subAtIndex(1)?.asString;
-            qualifiers!.add(CertificatePolicyQualifier(oid: oid, value: value));
+            qualifiers.add(CertificatePolicyQualifier(oid: oid, value: value));
           }
         });
       }
@@ -446,13 +448,13 @@ class CertificatePoliciesExtension extends X509Extension {
 }
 
 class CRLDistributionPointsExtension extends X509Extension {
-  CRLDistributionPointsExtension({required block}) : super(block: block);
+  CRLDistributionPointsExtension({@required block}) : super(block: block);
 
-  List<String>? get crls {
+  List<String> get crls {
     if (valueAsBlock == null) {
       return null;
     }
-    var subs = valueAsBlock!.subAtIndex(0)?.sub ?? <ASN1Object>[];
+    var subs = valueAsBlock.subAtIndex(0)?.sub ?? <ASN1Object>[];
     List<String> result = <String>[];
     subs.forEach((sub) {
       var asString = sub.asString;

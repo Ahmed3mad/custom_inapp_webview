@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 extension UtilColor on Color {
-  static Color? fromStringRepresentation(String colorValue) {
+  static Color fromStringRepresentation(String colorValue) {
     if (colorValue.startsWith("#")) {
       return fromHex(colorValue);
     } else if (colorValue.startsWith("rgb(")) {
@@ -334,7 +334,7 @@ extension UtilColor on Color {
     return null;
   }
 
-  static Color? fromHex(String? hexString) {
+  static Color fromHex(String hexString) {
     if (hexString == null) {
       return null;
     }
@@ -351,7 +351,7 @@ extension UtilColor on Color {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
-  static Color? fromRgbString(String? rgbString) {
+  static Color fromRgbString(String rgbString) {
     if (rgbString == null) {
       return null;
     }
@@ -365,7 +365,7 @@ extension UtilColor on Color {
     return Color.fromRGBO(rgbValues[0], rgbValues[1], rgbValues[2], 1);
   }
 
-  static Color? fromRgbaString(String? rgbaString) {
+  static Color fromRgbaString(String rgbaString) {
     if (rgbaString == null) {
       return null;
     }
@@ -380,7 +380,7 @@ extension UtilColor on Color {
         int.parse(rgbaValues[2]), double.parse(rgbaValues[3]));
   }
 
-  static Color? fromHlsString(String? hlsString) {
+  static Color fromHlsString(String hlsString) {
     if (hlsString == null) {
       return null;
     }
@@ -395,7 +395,7 @@ extension UtilColor on Color {
     return Color.fromRGBO(rgbValues[0], rgbValues[1], rgbValues[2], 1);
   }
 
-  static Color? fromHlsaString(String? hlsaString) {
+  static Color fromHlsaString(String hlsaString) {
     if (hlsaString == null) {
       return null;
     }
