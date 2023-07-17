@@ -479,7 +479,7 @@ extension UtilColor on Color {
 
 extension HexColor on Color {
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
-  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+  String toHex({bool leadingHashSign = true}) => this == null ? '' : '${leadingHashSign ? '#' : ''}'
       '${alpha.toRadixString(16).padLeft(2, '0')}'
       '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
