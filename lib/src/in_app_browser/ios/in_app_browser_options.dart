@@ -14,28 +14,28 @@ class IOSInAppBrowserOptions implements BrowserOptions, IosOptions {
   bool toolbarTopTranslucent;
 
   ///Set the tint color to apply to the navigation bar background.
-  Color? toolbarTopBarTintColor;
+  Color toolbarTopBarTintColor;
 
   ///Set the tint color to apply to the navigation items and bar button items.
-  Color? toolbarTopTintColor;
+  Color toolbarTopTintColor;
 
   ///Set to `true` to hide the toolbar at the bottom of the WebView. The default value is `false`.
   bool hideToolbarBottom;
 
   ///Set the custom background color of the toolbar at the bottom.
-  Color? toolbarBottomBackgroundColor;
+  Color toolbarBottomBackgroundColor;
 
   ///Set the tint color to apply to the bar button items.
-  Color? toolbarBottomTintColor;
+  Color toolbarBottomTintColor;
 
   ///Set to `true` to set the toolbar at the bottom translucent. The default value is `true`.
   bool toolbarBottomTranslucent;
 
   ///Set the custom text for the close button.
-  String? closeButtonCaption;
+  String closeButtonCaption;
 
   ///Set the custom color for the close button.
-  Color? closeButtonColor;
+  Color closeButtonColor;
 
   ///Set the custom modal presentation style when presenting the WebView. The default value is [IOSUIModalPresentationStyle.FULL_SCREEN].
   IOSUIModalPresentationStyle presentationStyle;
@@ -59,13 +59,13 @@ class IOSInAppBrowserOptions implements BrowserOptions, IosOptions {
   Map<String, dynamic> toMap() {
     return {
       "toolbarTopTranslucent": toolbarTopTranslucent,
-      "toolbarTopTintColor": toolbarTopTintColor?.toHex(),
+      "toolbarTopTintColor": toolbarTopTintColor.toHex(),
       "hideToolbarBottom": hideToolbarBottom,
-      "toolbarBottomBackgroundColor": toolbarBottomBackgroundColor?.toHex(),
-      "toolbarBottomTintColor": toolbarBottomTintColor?.toHex(),
+      "toolbarBottomBackgroundColor": toolbarBottomBackgroundColor.toHex(),
+      "toolbarBottomTintColor": toolbarBottomTintColor.toHex(),
       "toolbarBottomTranslucent": toolbarBottomTranslucent,
       "closeButtonCaption": closeButtonCaption,
-      "closeButtonColor": closeButtonColor?.toHex(),
+      "closeButtonColor": closeButtonColor.toHex(),
       "presentationStyle": presentationStyle.toValue(),
       "transitionStyle": transitionStyle.toValue(),
     };
@@ -84,9 +84,9 @@ class IOSInAppBrowserOptions implements BrowserOptions, IosOptions {
     options.closeButtonCaption = map["closeButtonCaption"];
     options.closeButtonColor = UtilColor.fromHex(map["closeButtonColor"]);
     options.presentationStyle =
-        IOSUIModalPresentationStyle.fromValue(map["presentationStyle"])!;
+        IOSUIModalPresentationStyle.fromValue(map["presentationStyle"]);
     options.transitionStyle =
-        IOSUIModalTransitionStyle.fromValue(map["transitionStyle"])!;
+        IOSUIModalTransitionStyle.fromValue(map["transitionStyle"]);
     return options;
   }
 

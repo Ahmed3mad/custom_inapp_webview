@@ -54,7 +54,7 @@ class AndroidWebViewFeature {
     AndroidWebViewFeature.WEB_VIEW_RENDERER_TERMINATE,
   ].toSet();
 
-  static AndroidWebViewFeature? fromValue(String? value) {
+  static AndroidWebViewFeature fromValue(String value) {
     if (value != null) {
       try {
         return AndroidWebViewFeature.values
