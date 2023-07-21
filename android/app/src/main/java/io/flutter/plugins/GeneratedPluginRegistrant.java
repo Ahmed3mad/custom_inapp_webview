@@ -1,8 +1,8 @@
 package io.flutter.plugins;
 
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.deviceinfo.DeviceInfoPlugin;
 import com.pichillilorenzo.flutter_inappwebview.InAppWebViewFlutterPlugin;
+import io.flutter.plugins.deviceinfo.DeviceInfoPlugin;
 
 /**
  * Generated file. Do not edit.
@@ -12,8 +12,8 @@ public final class GeneratedPluginRegistrant {
     if (alreadyRegisteredWith(registry)) {
       return;
     }
-    DeviceInfoPlugin.registerWith(registry.registrarFor("io.flutter.plugins.deviceinfo.DeviceInfoPlugin"));
     InAppWebViewFlutterPlugin.registerWith(registry.registrarFor("com.pichillilorenzo.flutter_inappwebview.InAppWebViewFlutterPlugin"));
+    DeviceInfoPlugin.registerWith(registry.registrarFor("io.flutter.plugins.deviceinfo.DeviceInfoPlugin"));
   }
 
   private static boolean alreadyRegisteredWith(PluginRegistry registry) {
